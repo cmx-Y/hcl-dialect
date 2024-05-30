@@ -2289,7 +2289,9 @@ void hcl::registerEmitVivadoHLSTranslation() {
           mlir::affine::AffineDialect,
           mlir::math::MathDialect,
           mlir::memref::MemRefDialect,
-          mlir::linalg::LinalgDialect
+          mlir::linalg::LinalgDialect,
+          bufferization::BufferizationDialect,
+          mlir::sparse_tensor::SparseTensorDialect
         >();
         // clang-format on
       });
