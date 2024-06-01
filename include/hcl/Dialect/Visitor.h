@@ -15,6 +15,7 @@
 #include "mlir/Dialect/MemRef/IR/MemRef.h"
 #include "mlir/Dialect/SCF/IR/SCF.h"
 #include "mlir/Dialect/Tensor/IR/Tensor.h"
+#include "mlir/Dialect/SparseTensor/IR/SparseTensor.h"
 #include "llvm/ADT/TypeSwitch.h"
 
 #include "hcl/Dialect/HeteroCLDialect.h"
@@ -71,6 +72,8 @@ public:
             arith::FPToSIOp, arith::FPToUIOp, arith::BitcastOp,
             hcl::FixedToFloatOp, hcl::FloatToFixedOp, hcl::IntToFixedOp,
             hcl::FixedToIntOp, hcl::FixedToFixedOp, UnrealizedConversionCastOp,
+            //SparseTensor operations
+            sparse_tensor::ToPositionsOp, 
             // HCL operations.
             hcl::CreateLoopHandleOp, hcl::CreateOpHandleOp, hcl::AddFixedOp,
             hcl::SubFixedOp, hcl::MulFixedOp, hcl::DivFixedOp, hcl::CmpFixedOp,
@@ -229,6 +232,9 @@ public:
   HANDLE(hcl::CreateLoopHandleOp);
   HANDLE(hcl::CreateOpHandleOp);
   HANDLE(hcl::PrintOp);
+
+  //SparseTensor operations
+  HANDLE(sparse_tensor::ToPositionsOp);
 
   // Fixed point operations
   HANDLE(hcl::AddFixedOp);

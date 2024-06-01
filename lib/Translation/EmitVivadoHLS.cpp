@@ -19,6 +19,7 @@
 
 #include "hcl/Dialect/HeteroCLDialect.h"
 #include "hcl/Dialect/HeteroCLOps.h"
+#include <iostream>
 
 using namespace mlir;
 using namespace hcl;
@@ -154,6 +155,9 @@ public:
   void emitSetSlice(hcl::SetIntSliceOp op);
   void emitBitReverse(hcl::BitReverseOp op);
   void emitBitcast(arith::BitcastOp op);
+
+  /// Sparse tensor-related statement emitters.
+  void emitToPositions(sparse_tensor::ToPositionsOp op);
 
   /// Top-level MLIR module emitter.
   void emitModule(ModuleOp module);
@@ -326,6 +330,9 @@ public:
   }
   bool visitOp(memref::DimOp op) { return emitter.emitDim(op), true; }
   bool visitOp(memref::RankOp op) { return emitter.emitRank(op), true; }
+
+  /// Sparse tensor-related statements.
+  bool visitOp(sparse_tensor::ToPositionsOp op) { return emitter.emitToPositions(op), true; }
 
 private:
   ModuleEmitter &emitter;
@@ -1366,6 +1373,11 @@ void ModuleEmitter::emitRank(memref::RankOp op) {
     emitError(op, "is unranked.");
 }
 
+void ModuleEmitter::emitToPositions(sparse_tensor::ToPositionsOp op) {
+  indent();
+  os << "sparse_tensor::ToPositionsOp is not supported yet.";
+}
+
 /// Standard expression emitters.
 void ModuleEmitter::emitBinary(Operation *op, const char *syntax) {
   auto rank = emitNestedLoopHead(op->getResult(0));
@@ -2094,6 +2106,7 @@ void ModuleEmitter::emitFunction(func::FuncOp func) {
     indent();
     fixUnsignedType(arg, itypes[argIdx] == 'u');
     if (arg.getType().isa<ShapedType>()) {
+      printf("place1\n");
       if (input_args.size() == 0) {
         emitArrayDecl(arg, true);
       } else {
