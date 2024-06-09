@@ -1375,7 +1375,7 @@ void ModuleEmitter::emitRank(memref::RankOp op) {
 
 void ModuleEmitter::emitToPositions(sparse_tensor::ToPositionsOp op) {
   indent();
-  os << "sparse_tensor::ToPositionsOp is not supported yet.";
+  os << "sparse_tensor::ToPositionsOp is not supported yet.\n";
 }
 
 /// Standard expression emitters.
@@ -2106,8 +2106,14 @@ void ModuleEmitter::emitFunction(func::FuncOp func) {
     indent();
     fixUnsignedType(arg, itypes[argIdx] == 'u');
     if (arg.getType().isa<ShapedType>()) {
-      printf("place1\n");
-      if (input_args.size() == 0) {
+      auto tensor = arg.getType().dyn_cast<RankedTensorType>();
+      if (tensor) {
+        os << tensor.getElementType() << " ";
+        os << addName(arg, false, "");
+        for (auto &shape : tensor.getShape())
+          os << "[" << shape << "]";
+      }
+      else if (input_args.size() == 0) {
         emitArrayDecl(arg, true);
       } else {
         emitArrayDecl(arg, true, input_args[argIdx]);
