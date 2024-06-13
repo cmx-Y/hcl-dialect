@@ -158,6 +158,8 @@ public:
 
   /// Sparse tensor-related statement emitters.
   void emitToPositions(sparse_tensor::ToPositionsOp op);
+  void emitToCoordinates(sparse_tensor::ToCoordinatesOp op);
+  void emitToValues(sparse_tensor::ToValuesOp op);
 
   /// Top-level MLIR module emitter.
   void emitModule(ModuleOp module);
@@ -333,6 +335,8 @@ public:
 
   /// Sparse tensor-related statements.
   bool visitOp(sparse_tensor::ToPositionsOp op) { return emitter.emitToPositions(op), true; }
+  bool visitOp(sparse_tensor::ToCoordinatesOp op) { return emitter.emitToCoordinates(op), true; }
+  bool visitOp(sparse_tensor::ToValuesOp op) { return emitter.emitToValues(op), true; }
 
 private:
   ModuleEmitter &emitter;
@@ -1375,7 +1379,29 @@ void ModuleEmitter::emitRank(memref::RankOp op) {
 
 void ModuleEmitter::emitToPositions(sparse_tensor::ToPositionsOp op) {
   indent();
-  os << "sparse_tensor::ToPositionsOp is not supported yet.\n";
+  auto tensor = op.getTensor().getType().dyn_cast<RankedTensorType>();
+  if (tensor) {
+    os << tensor.getElementType() << " ";
+  }
+  os << "pos[3];\n";
+}
+
+void ModuleEmitter::emitToCoordinates(sparse_tensor::ToCoordinatesOp op) {
+  indent();
+  auto tensor = op.getTensor().getType().dyn_cast<RankedTensorType>();
+  if (tensor) {
+    os << tensor.getElementType() << " ";
+  }
+  os << "coord[8];\n";
+}
+
+void ModuleEmitter::emitToValues(sparse_tensor::ToValuesOp op) {
+  indent();
+  auto tensor = op.getTensor().getType().dyn_cast<RankedTensorType>();
+  if (tensor) {
+    os << tensor.getElementType() << " ";
+  }
+  os << "values[8];\n";
 }
 
 /// Standard expression emitters.

@@ -73,7 +73,8 @@ public:
             hcl::FixedToFloatOp, hcl::FloatToFixedOp, hcl::IntToFixedOp,
             hcl::FixedToIntOp, hcl::FixedToFixedOp, UnrealizedConversionCastOp,
             //SparseTensor operations
-            sparse_tensor::ToPositionsOp, 
+            sparse_tensor::ToPositionsOp, sparse_tensor::ToCoordinatesOp,
+            sparse_tensor::ToValuesOp,
             // HCL operations.
             hcl::CreateLoopHandleOp, hcl::CreateOpHandleOp, hcl::AddFixedOp,
             hcl::SubFixedOp, hcl::MulFixedOp, hcl::DivFixedOp, hcl::CmpFixedOp,
@@ -235,6 +236,8 @@ public:
 
   //SparseTensor operations
   HANDLE(sparse_tensor::ToPositionsOp);
+  HANDLE(sparse_tensor::ToCoordinatesOp);
+  HANDLE(sparse_tensor::ToValuesOp);
 
   // Fixed point operations
   HANDLE(hcl::AddFixedOp);
